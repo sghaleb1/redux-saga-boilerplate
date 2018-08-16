@@ -1,4 +1,4 @@
-import {call, put, takeEvery, fork} from 'redux-saga/effects';
+import {call, put, takeEvery, fork, all} from 'redux-saga/effects';
 import * as service from '../../services/api';
 import * as actions from '../actions/weather';
 import * as types from '../actions/actionTypes';
@@ -6,9 +6,9 @@ import * as types from '../actions/actionTypes';
 function* fetchWeather(action){ //Worker
   try{
     yield put(actions.requestWeather());
-    const [ weather ] = yield [
+    const [ weather ] = yield all([
       call(service.getWeather, action.city)
-    ];console.log('SAGA call weather', weather)
+    ]);console.log('SAGA call weather', weather)
     yield put(actions.receiveWeather( weather));    
   } catch(e){
     yield put(actions.receiveWeatherFailed());
